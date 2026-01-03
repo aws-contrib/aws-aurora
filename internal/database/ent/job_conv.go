@@ -3,7 +3,7 @@ package ent
 // goverter:converter
 // goverter:skipCopySameType yes
 // goverter:output:file models_conv_gen.go
-// goverter:output:package github.com/aws-contrib/aurora/internal/database/ent
+// goverter:output:package github.com/aws-contrib/aws-aurora/internal/database/ent
 type GetJobParamsConverter interface {
 	// goverter:update target
 	SetFromJob(target *GetJobParams, source *Job)
@@ -12,7 +12,7 @@ type GetJobParamsConverter interface {
 // goverter:converter
 // goverter:skipCopySameType yes
 // goverter:output:file models_conv_gen.go
-// goverter:output:package github.com/aws-contrib/aurora/internal/database/ent
+// goverter:output:package github.com/aws-contrib/aws-aurora/internal/database/ent
 type InsertJobParamsConverter interface {
 	// goverter:update target
 	SetFromJob(target *InsertJobParams, source *Job)
@@ -21,7 +21,7 @@ type InsertJobParamsConverter interface {
 // goverter:converter
 // goverter:skipCopySameType yes
 // goverter:output:file models_conv_gen.go
-// goverter:output:package github.com/aws-contrib/aurora/internal/database/ent
+// goverter:output:package github.com/aws-contrib/aws-aurora/internal/database/ent
 type ExecInsertJobParamsConverter interface {
 	// goverter:update target
 	SetFromJob(target *ExecInsertJobParams, source *Job)
@@ -30,7 +30,7 @@ type ExecInsertJobParamsConverter interface {
 // goverter:converter
 // goverter:skipCopySameType yes
 // goverter:output:file models_conv_gen.go
-// goverter:output:package github.com/aws-contrib/aurora/internal/database/ent
+// goverter:output:package github.com/aws-contrib/aws-aurora/internal/database/ent
 type DeleteJobParamsConverter interface {
 	// goverter:update target
 	SetFromJob(target *DeleteJobParams, source *Job)
@@ -39,7 +39,7 @@ type DeleteJobParamsConverter interface {
 // goverter:converter
 // goverter:skipCopySameType yes
 // goverter:output:file models_conv_gen.go
-// goverter:output:package github.com/aws-contrib/aurora/internal/database/ent
+// goverter:output:package github.com/aws-contrib/aws-aurora/internal/database/ent
 type ExecDeleteJobParamsConverter interface {
 	// goverter:update target
 	SetFromJob(target *ExecDeleteJobParams, source *Job)

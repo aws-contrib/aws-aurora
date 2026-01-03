@@ -1,6 +1,6 @@
 package fake
 
-import "github.com/aws-contrib/aurora/internal/database/ent"
+import "github.com/aws-contrib/aws-aurora/internal/database/ent"
 
 // NewFakeMigration creates a new fake migration entity with a revision.
 func NewFakeMigration() *ent.Migration {

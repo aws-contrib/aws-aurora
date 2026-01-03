@@ -3,9 +3,9 @@ package ent_test
 import (
 	"fmt"
 
-	"github.com/aws-contrib/aurora/internal/database/ent"
+	"github.com/aws-contrib/aws-aurora/internal/database/ent"
 
-	. "github.com/aws-contrib/aurora/internal/database/ent/fake"
+	. "github.com/aws-contrib/aws-aurora/internal/database/ent/fake"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )

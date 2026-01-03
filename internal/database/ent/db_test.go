@@ -3,7 +3,7 @@ package ent_test
 import (
 	"fmt"
 
-	"github.com/aws-contrib/aurora/internal/database/ent"
+	"github.com/aws-contrib/aws-aurora/internal/database/ent"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	. "github.com/onsi/ginkgo/v2"

@@ -3,7 +3,7 @@ package cmd_test
 import (
 	"os"
 
-	"github.com/aws-contrib/aurora/cmd"
+	"github.com/aws-contrib/aws-aurora/cmd"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"

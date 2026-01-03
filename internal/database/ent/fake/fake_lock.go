@@ -3,7 +3,7 @@ package fake
 import (
 	"time"
 
-	"github.com/aws-contrib/aurora/internal/database/ent"
+	"github.com/aws-contrib/aws-aurora/internal/database/ent"
 	"github.com/google/uuid"
 )
 

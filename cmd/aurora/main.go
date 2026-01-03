@@ -8,9 +8,9 @@ import (
 	"runtime/debug"
 	"time"
 
-	"github.com/aws-contrib/aurora/cmd"
-	"github.com/aws-contrib/aurora/internal/database/ent"
-	"github.com/aws-contrib/aurora/internal/database/ent/template"
+	"github.com/aws-contrib/aws-aurora/cmd"
+	"github.com/aws-contrib/aws-aurora/internal/database/ent"
+	"github.com/aws-contrib/aws-aurora/internal/database/ent/template"
 	"github.com/urfave/cli/v3"
 )
 

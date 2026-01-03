@@ -1,4 +1,4 @@
-# aurora
+# AWS Aurora DSQL
 
 Manage your **Aurora DSQL** schema as code.
 
@@ -82,7 +82,7 @@ The first stage pulls the `aurora` binary from the published image, and the seco
 ### Example `Dockerfile`
 
 ```dockerfile
-FROM ghcr.io/aws-contrib/aurora:edge AS aurora
+FROM ghcr.io/aws-contrib/aws-aurora:edge AS aurora
 FROM scratch
 
 WORKDIR /app

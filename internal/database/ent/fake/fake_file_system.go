@@ -5,7 +5,7 @@ import (
 	"io/fs"
 	"sync"
 
-	"github.com/aws-contrib/aurora/internal/database/ent"
+	"github.com/aws-contrib/aws-aurora/internal/database/ent"
 )
 
 type FakeFileSystem struct {
