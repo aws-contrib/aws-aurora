@@ -1,6 +1,6 @@
 module github.com/aws-contrib/aws-aurora
 
-go 1.24.9
+go 1.25
 
 tool (
 	github.com/jmattheis/goverter/cmd/goverter
@@ -24,7 +24,7 @@ require (
 	github.com/onsi/ginkgo/v2 v2.28.1
 	github.com/onsi/gomega v1.39.1
 	github.com/urfave/cli/v3 v3.7.0
-	github.com/zclconf/go-cty v1.17.0
+	github.com/zclconf/go-cty v1.18.0
 )
 
 require (
