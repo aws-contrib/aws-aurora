@@ -29,9 +29,6 @@ jobs:
         run: go tool ginkgo -r -coverprofile=coverprofile.out
         env:
           AURORA_DATABASE_URL: "postgres://vscode@localhost:5432/aurora"
-      - uses: actions/checkout@v6
-        with:
-          ref: ${{ github.ref }}
       - uses: k1LoW/octocov-action@v1
       - name: Commit coverage badge
         run: |
