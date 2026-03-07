@@ -5,7 +5,7 @@
 [![CI](https://github.com/aws-contrib/aws-aurora/actions/workflows/ci.yml/badge.svg)](https://github.com/aws-contrib/aws-aurora/actions/workflows/ci.yml)
 [![Release](https://github.com/aws-contrib/aws-aurora/actions/workflows/release.yml/badge.svg)](https://github.com/aws-contrib/aws-aurora/actions/workflows/release.yml)
 [![Latest Release](https://img.shields.io/github/v/release/aws-contrib/aws-aurora?sort=semver)](https://github.com/aws-contrib/aws-aurora/releases/latest)
-[![Coverage](https://github.com/aws-contrib/aws-aurora/.github/coverage.svg)](https://github.com/aws-contrib/aws-aurora/actions/workflows/ci.yml)
+[![Coverage](https://raw.githubusercontent.com/aws-contrib/aws-aurora/main/.github/coverage.svg)](https://github.com/aws-contrib/aws-aurora/actions/workflows/ci.yml)
 [![Go Version](https://img.shields.io/github/go-mod/go-version/aws-contrib/aws-aurora)](go.mod)
 [![Go Reference](https://pkg.go.dev/badge/github.com/aws-contrib/aws-aurora.svg)](https://pkg.go.dev/github.com/aws-contrib/aws-aurora)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
