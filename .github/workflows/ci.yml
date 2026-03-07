@@ -34,7 +34,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .github/coverage.svg
+          git add -f .github/coverage.svg
           git diff --cached --quiet || git commit -m "chore: update coverage badge [skip ci]"
           git push
   docker:
