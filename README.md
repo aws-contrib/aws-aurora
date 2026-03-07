@@ -4,7 +4,12 @@
 
 [![CI](https://github.com/aws-contrib/aws-aurora/actions/workflows/ci.yml/badge.svg)](https://github.com/aws-contrib/aws-aurora/actions/workflows/ci.yml)
 [![Release](https://github.com/aws-contrib/aws-aurora/actions/workflows/release.yml/badge.svg)](https://github.com/aws-contrib/aws-aurora/actions/workflows/release.yml)
+[![Latest Release](https://img.shields.io/github/v/release/aws-contrib/aws-aurora?sort=semver)](https://github.com/aws-contrib/aws-aurora/releases/latest)
+[![Coverage](https://github.com/aws-contrib/aws-aurora/.github/coverage.svg)](https://github.com/aws-contrib/aws-aurora/actions/workflows/ci.yml)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/aws-contrib/aws-aurora)](go.mod)
 [![Go Reference](https://pkg.go.dev/badge/github.com/aws-contrib/aws-aurora.svg)](https://pkg.go.dev/github.com/aws-contrib/aws-aurora)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![GHCR](https://img.shields.io/badge/container-ghcr.io-blue?logo=github)](https://github.com/aws-contrib/aws-aurora/pkgs/container/aws-aurora)
 
 `aurora` is a CLI tool that brings **schema-as-code migrations** to [AWS Aurora DSQL](https://docs.aws.amazon.com/aurora-dsql/latest/userguide/what-is-aurora-dsql.html). It uses the same HCL config format as [Atlas](https://atlasgo.io/), handles distributed locking, generates IAM auth tokens automatically, and translates PostgreSQL index syntax to Aurora DSQL-compatible equivalents — so your local dev environment and production stay in sync.
 
