@@ -15,5 +15,16 @@
   },
   "forwardPorts": [
     5432
-  ]
+  ],
+  "postCreateCommand": "go mod download",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go",
+        "ms-azuretools.vscode-docker",
+        "eamodio.gitlens",
+        "GitHub.vscode-pull-request-github"
+      ]
+    }
+  }
 }
