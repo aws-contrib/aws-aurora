@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.2.0](https://github.com/aws-contrib/aws-aurora/compare/v0.1.0...v0.2.0) (2026-03-11)
+
+
+### Features
+
+* **dev:** consolidate dependency management via nix ([4055c0d](https://github.com/aws-contrib/aws-aurora/commit/4055c0d5c860512edf7c6b1e5883178e249e7498))
+
+
+### Bug Fixes
+
+* **ci:** force-add coverage.svg which is listed in .gitignore ([d3bb718](https://github.com/aws-contrib/aws-aurora/commit/d3bb718b710fef7672ad22fdfb68d599abae15b6))
+* **ci:** remove redundant checkout that wiped coverage file before octocov ([36de923](https://github.com/aws-contrib/aws-aurora/commit/36de9238701dab67403bcbc0470d000165fc91d5))
+* **docker:** bump builder image to golang:1.25 to match go.mod requirement ([46cdff2](https://github.com/aws-contrib/aws-aurora/commit/46cdff26b30f666ec254f221b5a59111a0dd5109))
+
 ## [0.1.0](https://github.com/aws-contrib/aws-aurora/compare/v0.0.1...v0.1.0) (2026-03-07)
 
 
