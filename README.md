@@ -142,7 +142,21 @@ status flags:
 
 ## Development
 
-This project ships with a [Dev Container](https://containers.dev/) that includes Go, PostgreSQL, and all recommended VS Code extensions.
+Dependencies are managed via [Nix](https://nixos.org/) flakes. You can work locally with `nix develop` or inside a Dev Container — both use the same toolchain.
+
+### Nix shell (recommended)
+
+Requires Nix with flakes enabled (`experimental-features = nix-command flakes`).
+
+```bash
+nix develop
+```
+
+This drops you into a shell with Go, PostgreSQL client tools, and AWS CLI available. You'll need a local PostgreSQL instance — see `$AURORA_DATABASE_URL` for the expected connection string.
+
+### Dev Container
+
+This project ships with a [Dev Container](https://containers.dev/) powered by the [Nix devcontainer feature](https://github.com/devcontainers/features). It installs the same Nix environment and spins up a PostgreSQL service automatically.
 
 ```bash
 # Open in VS Code with Dev Containers extension installed
@@ -150,7 +164,11 @@ code .
 # Then: Reopen in Container
 ```
 
-Once inside the container, a local PostgreSQL instance is available at `127.0.0.1:5432` and `$AURORA_DATABASE_URL` is set automatically.
+Once inside the container, a local PostgreSQL instance is available at `127.0.0.1:5432` and `$AURORA_DATABASE_URL` is set automatically. Enter the Nix shell to get the full toolchain:
+
+```bash
+nix develop
+```
 
 ```bash
 # Run tests
@@ -165,6 +183,7 @@ go tool ginkgo -r -coverprofile=coverprofile.out
 Contributions are welcome. Please open an issue before submitting a pull request for significant changes.
 
 1. Fork the repo and create a feature branch
-2. Write tests for new behaviour
-3. Ensure `go tool ginkgo -r` passes
-4. Open a PR — the CI pipeline will run tests automatically
+2. Run `nix develop` to enter the development environment
+3. Write tests for new behaviour
+4. Ensure `go tool ginkgo -r` passes
+5. Open a PR — the CI pipeline will run tests automatically

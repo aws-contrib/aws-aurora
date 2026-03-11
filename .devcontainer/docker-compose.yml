@@ -1,8 +1,6 @@
 services:
   workspace:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: mcr.microsoft.com/devcontainers/base:bookworm
     command: sleep infinity
     volumes:
       - ..:/home/vscode/workspace:cached
