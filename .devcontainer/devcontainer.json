@@ -16,7 +16,13 @@
   "forwardPorts": [
     5432
   ],
-  "postCreateCommand": "go mod download",
+  "features": {
+    "ghcr.io/devcontainers/features/nix:1": {
+      "version": "latest",
+      "extraNixConfig": "experimental-features = nix-command flakes"
+    }
+  },
+  "postCreateCommand": "nix develop --command go mod download",
   "customizations": {
     "vscode": {
       "extensions": [
