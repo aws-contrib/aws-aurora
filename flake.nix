@@ -19,6 +19,7 @@
       in
       {
         devShells.default = pkgs.mkShell {
+          name = "aws-aurora";
           packages = with pkgs; [
             go
             gotools
