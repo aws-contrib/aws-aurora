@@ -23,15 +23,15 @@ jobs:
         ports:
           - 5432:5432
     steps:
-      - uses: actions/checkout@6.0.2
-      - uses: actions/setup-go@6.3.0
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
       - name: Run tests with coverage report output
         run: go tool ginkgo -r -coverprofile=coverprofile.out
         env:
           AURORA_DATABASE_URL: "postgres://vscode@localhost:5432/aurora"
-      - uses: k1LoW/octocov-action@1.5.0
+      - uses: k1LoW/octocov-action@v1
 
   release-please:
     runs-on: ubuntu-latest
@@ -40,7 +40,7 @@ jobs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
-      - uses: googleapis/release-please-action@4.4.0
+      - uses: googleapis/release-please-action@v4
         id: release
         with:
           config-file: .github/config/release-please-config.json
@@ -51,21 +51,21 @@ jobs:
     needs: release-please
     if: ${{ needs.release-please.outputs.release_created }}
     steps:
-      - uses: actions/checkout@6.0.2
-      - uses: docker/setup-buildx-action@4.0.0
-      - uses: docker/login-action@4.0.0
+      - uses: actions/checkout@v6
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: docker/metadata-action@6.0.0
+      - uses: docker/metadata-action@v6
         id: metadata
         with:
           images: ghcr.io/aws-contrib/aws-aurora
           tags: |
             type=semver,pattern={{version}},value=${{ needs.release-please.outputs.tag_name }}
             type=semver,pattern={{major}}.{{minor}},value=${{ needs.release-please.outputs.tag_name }}
-      - uses: docker/build-push-action@7.0.0
+      - uses: docker/build-push-action@v7
         with:
           context: .
           file: ./deployment/docker/Dockerfile
