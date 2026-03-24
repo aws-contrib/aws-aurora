@@ -1,37 +1,28 @@
 {
-  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.base.schema.json",
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/refs/heads/main/schemas/devContainer.base.schema.json",
   "name": "aurora",
-  "service": "workspace",
   "dockerComposeFile": "docker-compose.yml",
+  "service": "workspace",
   "workspaceFolder": "/home/vscode/workspace",
-  "remoteUser": "vscode",
-  "remoteEnv": {
-    "AURORA_DATABASE_URL": "postgres://${containerEnv:PGHOST}:${containerEnv:PGPORT}/${containerEnv:PGDATABASE}?sslmode=disable"
+  "mounts": [
+    "source=${localWorkspaceFolderBasename}-nix,target=/nix,type=volume",
+    "source=${localWorkspaceFolderBasename}-cache,target=/home/vscode/.cache,type=volume"
+  ],
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/devcontainers/features/nix:1": {
+      "extraNixConfig": "experimental-features = nix-command flakes"
+    }
   },
   "containerEnv": {
     "PGDATABASE": "aurora",
     "PGHOST": "127.0.0.1",
     "PGPORT": "5432"
   },
-  "forwardPorts": [
-    5432
-  ],
-  "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/devcontainers/features/nix:1": {
-      "version": "latest",
-      "extraNixConfig": "experimental-features = nix-command flakes"
-    }
+  "remoteEnv": {
+    "AURORA_DATABASE_URL": "postgres://${containerEnv:PGHOST}:${containerEnv:PGPORT}/${containerEnv:PGDATABASE}?sslmode=disable"
   },
   "postCreateCommand": "nix develop --command go mod download",
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "golang.go",
-        "ms-azuretools.vscode-docker",
-        "eamodio.gitlens",
-        "GitHub.vscode-pull-request-github"
-      ]
-    }
-  }
+  "remoteUser": "vscode",
+  "forwardPorts": [5432]
 }
