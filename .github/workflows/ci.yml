@@ -1,11 +1,19 @@
-name: ci
+name: CI
+
+permissions:
+  contents: write
+  id-token: write
+  pull-requests: write
+  packages: write
+
 on:
   push:
-    branches:
-      - main
-permissions: write-all
+    branches: [main]
+  pull_request:
+    branches: [main]
+
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -22,49 +30,104 @@ jobs:
           - 5432:5432
     steps:
       - uses: actions/checkout@v6
+
       - uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
-      - name: Run tests with coverage report output
+
+      - name: Run Tests
         run: go tool ginkgo -r -coverprofile=coverprofile.out
         env:
           AURORA_DATABASE_URL: "postgres://vscode@localhost:5432/aurora"
+
       - uses: k1LoW/octocov-action@v1
-      - name: Commit coverage badge
+
+      - name: Commit Coverage Badge
+        if: github.event_name == 'push'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -f .github/coverage.svg
           git diff --cached --quiet || git commit -m "chore: update coverage badge [skip ci]"
           git push
+
   docker:
+    needs: build
     runs-on: ubuntu-latest
-    needs: ["test"]
     steps:
       - uses: actions/checkout@v6
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
+
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Get Docker metadata
         id: metadata
         uses: docker/metadata-action@v6
         with:
-          images: |
-            ghcr.io/aws-contrib/aws-aurora
+          images: ghcr.io/aws-contrib/aws-aurora
           tags: |
             type=sha,format=short
             type=ref,event=branch
+            type=ref,event=pr
             type=edge,branch=main
-      - name: Build and push multi-platform image
+
+      - name: Build and push image
         uses: docker/build-push-action@v7
         with:
           context: .
           file: ./deployment/docker/Dockerfile
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
+          push: ${{ github.event_name == 'push' }}
+
+  release:
+    needs: docker
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Create Release PR
+        id: release
+        uses: googleapis/release-please-action@v4
+        with:
+          config-file: .github/config/release-please-config.json
+          manifest-file: .github/config/release-please-manifest.json
+
+  docker-release:
+    needs: release
+    if: ${{ needs.release.outputs.release_created }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/metadata-action@v6
+        id: metadata
+        with:
+          images: ghcr.io/aws-contrib/aws-aurora
+          tags: |
+            type=semver,pattern={{version}},value=${{ needs.release.outputs.tag_name }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ needs.release.outputs.tag_name }}
+      - uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./deployment/docker/Dockerfile
+          platforms: linux/amd64,linux/arm64
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
           push: true
