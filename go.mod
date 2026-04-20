@@ -14,7 +14,7 @@ tool (
 require (
 	github.com/aws/aws-sdk-go-v2 v1.41.6
 	github.com/aws/aws-sdk-go-v2/config v1.32.15
-	github.com/aws/aws-sdk-go-v2/feature/dsql/auth v1.1.21
+	github.com/aws/aws-sdk-go-v2/feature/dsql/auth v1.1.22
 	github.com/fatih/color v1.19.0
 	github.com/golang-cz/devslog v0.0.15
 	github.com/google/uuid v1.6.0
