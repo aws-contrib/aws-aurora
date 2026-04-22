@@ -36,7 +36,7 @@ jobs:
           go-version-file: go.mod
 
       - name: Run Tests
-        run: go tool ginkgo -r -coverprofile=coverprofile.out
+        run: go tool ginkgo -r -coverprofile=coverage.out -covermode=atomic ./...
         env:
           AURORA_DATABASE_URL: "postgres://vscode@localhost:5432/aurora"
 

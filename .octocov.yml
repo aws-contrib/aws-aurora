@@ -6,4 +6,5 @@ coverage:
   acceptable: 80%
 comment:
   if: is_pull_request
+  deletePrevious: true
 summary:
