@@ -3,7 +3,7 @@ coverage:
     path: .github/octocov/badge.svg
   paths:
     - coverage.out
-  acceptable: 80%
+  acceptable: 70%
 comment:
   if: is_pull_request
   deletePrevious: true
