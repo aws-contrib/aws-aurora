@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.1](https://github.com/aws-contrib/aws-aurora/compare/v0.2.0...v0.2.1) (2026-04-23)
+
+
+### Bug Fixes
+
+* add postCreateCommand to restore nix volume permissions ([f0571e3](https://github.com/aws-contrib/aws-aurora/commit/f0571e3b9a9392197f3718bea67a273083b7e720))
+* lower coverage threshold to 70% to match actual coverage ([3c6e186](https://github.com/aws-contrib/aws-aurora/commit/3c6e18629631a0268d49b8f8549a830a33def34d))
+* use coverage.out consistent with octocov config ([e8943b6](https://github.com/aws-contrib/aws-aurora/commit/e8943b664e875a2504a6c6f7999d2458170fda8c))
+
 ## [0.2.0](https://github.com/aws-contrib/aws-aurora/compare/v0.1.0...v0.2.0) (2026-03-11)
 
 
