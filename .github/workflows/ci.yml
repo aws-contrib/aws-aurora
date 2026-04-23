@@ -21,6 +21,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Setup Devcontainer
+        uses: devcontainer-env/devcontainer-ci@v1
+
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v22
 
