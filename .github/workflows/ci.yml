@@ -133,6 +133,7 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v7
         with:
+          file: deployment/docker/Dockerfile
           context: .
           push: ${{ needs.release.outputs.release_created == 'true' }}
           tags: |
