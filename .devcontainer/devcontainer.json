@@ -20,20 +20,5 @@
   "capAdd": [
     "SYS_PTRACE"
   ],
-  "postStartCommand": "sudo chown vscode:vscode /nix /home/vscode/.cache /home/vscode/go",
-  "customizations": {
-    "vscode": {
-      "settings": {
-        "terminal.integrated.defaultProfile.linux": "default",
-        "terminal.integrated.profiles.linux": {
-          "default": {
-            "path": "nix",
-            "args": [
-              "develop"
-            ]
-          }
-        }
-      }
-    }
-  }
+  "postStartCommand": "sudo chown vscode:vscode /nix /home/vscode/.cache /home/vscode/go"
 }
