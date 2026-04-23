@@ -1,124 +1,158 @@
 name: CI
 
-permissions:
-  contents: write
-  id-token: write
-  pull-requests: write
-  packages: write
-
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres
-        env:
-          PGDATABASE: aurora
-          POSTGRES_DB: aurora
-          POSTGRES_USER: vscode
-          POSTGRES_HOSTNAME: localhost
-          POSTGRES_HOST_AUTH_METHOD: trust
-        options: >-
-          --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-        ports:
-          - 5432:5432
-    steps:
-      - uses: actions/checkout@v6
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-      - uses: actions/setup-go@v6
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v22
+
+      - name: Setup Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v13
         with:
-          go-version-file: go.mod
+          use-flakehub: disabled
+          use-gha-cache: enabled
 
       - name: Run Tests
-        run: go tool ginkgo -r -coverprofile=coverage.out -covermode=atomic ./...
-        env:
-          AURORA_DATABASE_URL: "postgres://vscode@localhost:5432/aurora"
+        run: |
+          nix develop --command go tool ginkgo run -r \
+            -coverprofile=coverage.out -covermode=atomic ./...
 
-      - uses: k1LoW/octocov-action@v1
+      - name: Run Octocov
+        uses: k1LoW/octocov-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
-  docker:
-    needs: build
-    runs-on: ubuntu-latest
+  build:
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            nix_system: x86_64-linux
+          - os: macos-14
+            nix_system: aarch64-darwin
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    timeout-minutes: 60
+    env:
+      BIN_PATH: aurora-${{ matrix.nix_system }}
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout
+        uses: actions/checkout@v6
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v22
 
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v4
+      - name: Setup Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v13
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          use-flakehub: disabled
+          use-gha-cache: enabled
 
-      - name: Get Docker metadata
-        id: metadata
-        uses: docker/metadata-action@v6
-        with:
-          images: ghcr.io/aws-contrib/aws-aurora
-          tags: |
-            type=sha,format=short
-            type=ref,event=branch
-            type=ref,event=pr
-            type=edge,branch=main
+      - name: Build with Nix
+        run: nix build . --system ${{ matrix.nix_system }}
 
-      - name: Build and push image
-        uses: docker/build-push-action@v7
+      - name: Prepare Binary
+        run: install -m 0755 result/bin/aurora "$BIN_PATH"
+
+      - name: Upload Binary
+        uses: actions/upload-artifact@v7
         with:
-          context: .
-          file: ./deployment/docker/Dockerfile
-          tags: ${{ steps.metadata.outputs.tags }}
-          labels: ${{ steps.metadata.outputs.labels }}
-          push: ${{ github.event_name == 'push' }}
+          path: ${{ env.BIN_PATH }}
+          archive: false
+          if-no-files-found: error
+          retention-days: 1
 
   release:
-    needs: docker
+    needs: build
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Create Release PR
         id: release
-        uses: googleapis/release-please-action@v4
+        uses: googleapis/release-please-action@v5
         with:
-          config-file: .github/config/release-please-config.json
           manifest-file: .github/config/release-please-manifest.json
+          config-file: .github/config/release-please-config.json
+          target-branch: main
 
-  docker-release:
-    needs: release
-    if: ${{ needs.release.outputs.release_created }}
+  docker:
+    needs: [build, release]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v6
-      - uses: docker/setup-buildx-action@v4
-      - uses: docker/login-action@v4
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: docker/metadata-action@v6
-        id: metadata
-        with:
-          images: ghcr.io/aws-contrib/aws-aurora
-          tags: |
-            type=semver,pattern={{version}},value=${{ needs.release.outputs.tag_name }}
-            type=semver,pattern={{major}}.{{minor}},value=${{ needs.release.outputs.tag_name }}
-      - uses: docker/build-push-action@v7
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./deployment/docker/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          tags: ${{ steps.metadata.outputs.tags }}
-          labels: ${{ steps.metadata.outputs.labels }}
-          push: true
+          push: ${{ needs.release.outputs.release_created == 'true' }}
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ needs.release.outputs.tag_name || 'latest' }}
+
+  publish:
+    needs: release
+    if: needs.release.outputs.release_created
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 10
+    steps:
+      - name: Download Binaries
+        uses: actions/download-artifact@v8
+        with:
+          pattern: aurora-*
+          merge-multiple: true
+          skip-decompress: true
+          path: release/
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ needs.release.outputs.tag_name }}
+          files: release/*

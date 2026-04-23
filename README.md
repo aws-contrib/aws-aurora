@@ -3,7 +3,6 @@
 > Schema migrations for AWS Aurora DSQL — because [Atlas doesn't support it yet](https://github.com/ariga/atlas/issues/3539).
 
 [![CI](https://github.com/aws-contrib/aws-aurora/actions/workflows/ci.yml/badge.svg)](https://github.com/aws-contrib/aws-aurora/actions/workflows/ci.yml)
-[![Release](https://github.com/aws-contrib/aws-aurora/actions/workflows/release.yml/badge.svg)](https://github.com/aws-contrib/aws-aurora/actions/workflows/release.yml)
 [![Latest Release](https://img.shields.io/github/v/release/aws-contrib/aws-aurora?sort=semver)](https://github.com/aws-contrib/aws-aurora/releases/latest)
 [![Go Version](https://img.shields.io/github/go-mod/go-version/aws-contrib/aws-aurora)](go.mod)
 [![Go Reference](https://pkg.go.dev/badge/github.com/aws-contrib/aws-aurora.svg)](https://pkg.go.dev/github.com/aws-contrib/aws-aurora)
