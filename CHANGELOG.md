@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/aws-contrib/aws-aurora/compare/v0.2.1...v0.2.2) (2026-05-05)
+
+
+### Bug Fixes
+
+* **github:** correct action versions in update.yml ([e9d60c3](https://github.com/aws-contrib/aws-aurora/commit/e9d60c36d6a3bebc73eb4b4e6b69ec4466120b26))
+
 ## [0.2.1](https://github.com/aws-contrib/aws-aurora/compare/v0.2.0...v0.2.1) (2026-04-23)
 
 
