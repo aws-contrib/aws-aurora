@@ -185,3 +185,7 @@ Contributions are welcome. Please open an issue before submitting a pull request
 3. Write tests for new behaviour
 4. Ensure `go tool ginkgo -r` passes
 5. Open a PR — the CI pipeline will run tests automatically
+
+## License
+
+[MIT](LICENSE)
