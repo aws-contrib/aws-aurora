@@ -23,7 +23,7 @@ require (
 	github.com/jackc/pgx/v5 v5.9.2
 	github.com/onsi/ginkgo/v2 v2.28.3
 	github.com/onsi/gomega v1.40.0
-	github.com/urfave/cli/v3 v3.8.0
+	github.com/urfave/cli/v3 v3.9.0
 	github.com/zclconf/go-cty v1.18.1
 )
 
