@@ -20,9 +20,9 @@ jobs:
       - name: Setup Devcontainer
         uses: devcontainer-env/devcontainer-ci@v1
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v22
+        uses: DeterminateSystems/nix-installer-action@v23
       - name: Setup Nix Cache
-        uses: DeterminateSystems/magic-nix-cache-action@v14
+        uses: DeterminateSystems/magic-nix-cache-action@v15
         with:
           use-flakehub: disabled
           use-gha-cache: enabled
@@ -54,9 +54,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v22
+        uses: DeterminateSystems/nix-installer-action@v23
       - name: Setup Nix Cache
-        uses: DeterminateSystems/magic-nix-cache-action@v14
+        uses: DeterminateSystems/magic-nix-cache-action@v15
         with:
           use-flakehub: disabled
           use-gha-cache: enabled
