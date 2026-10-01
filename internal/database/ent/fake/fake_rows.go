@@ -6,6 +6,7 @@ import (
 
 	pgx "github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type FakeRows struct {
@@ -83,6 +84,16 @@ type FakeRows struct {
 	}
 	scanReturnsOnCall map[int]struct {
 		result1 error
+	}
+	TypeMapStub        func() *pgtype.Map
+	typeMapMutex       sync.RWMutex
+	typeMapArgsForCall []struct {
+	}
+	typeMapReturns struct {
+		result1 *pgtype.Map
+	}
+	typeMapReturnsOnCall map[int]struct {
+		result1 *pgtype.Map
 	}
 	ValuesStub        func() ([]any, error)
 	valuesMutex       sync.RWMutex
@@ -500,6 +511,59 @@ func (fake *FakeRows) ScanReturnsOnCall(i int, result1 error) {
 	}
 	fake.scanReturnsOnCall[i] = struct {
 		result1 error
+	}{result1}
+}
+
+func (fake *FakeRows) TypeMap() *pgtype.Map {
+	fake.typeMapMutex.Lock()
+	ret, specificReturn := fake.typeMapReturnsOnCall[len(fake.typeMapArgsForCall)]
+	fake.typeMapArgsForCall = append(fake.typeMapArgsForCall, struct {
+	}{})
+	stub := fake.TypeMapStub
+	fakeReturns := fake.typeMapReturns
+	fake.recordInvocation("TypeMap", []interface{}{})
+	fake.typeMapMutex.Unlock()
+	if stub != nil {
+		return stub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *FakeRows) TypeMapCallCount() int {
+	fake.typeMapMutex.RLock()
+	defer fake.typeMapMutex.RUnlock()
+	return len(fake.typeMapArgsForCall)
+}
+
+func (fake *FakeRows) TypeMapCalls(stub func() *pgtype.Map) {
+	fake.typeMapMutex.Lock()
+	defer fake.typeMapMutex.Unlock()
+	fake.TypeMapStub = stub
+}
+
+func (fake *FakeRows) TypeMapReturns(result1 *pgtype.Map) {
+	fake.typeMapMutex.Lock()
+	defer fake.typeMapMutex.Unlock()
+	fake.TypeMapStub = nil
+	fake.typeMapReturns = struct {
+		result1 *pgtype.Map
+	}{result1}
+}
+
+func (fake *FakeRows) TypeMapReturnsOnCall(i int, result1 *pgtype.Map) {
+	fake.typeMapMutex.Lock()
+	defer fake.typeMapMutex.Unlock()
+	fake.TypeMapStub = nil
+	if fake.typeMapReturnsOnCall == nil {
+		fake.typeMapReturnsOnCall = make(map[int]struct {
+			result1 *pgtype.Map
+		})
+	}
+	fake.typeMapReturnsOnCall[i] = struct {
+		result1 *pgtype.Map
 	}{result1}
 }
 
