@@ -21,11 +21,6 @@ jobs:
         uses: devcontainer-env/devcontainer-ci@v1
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v23
-      - name: Setup Nix Cache
-        uses: DeterminateSystems/magic-nix-cache-action@v15
-        with:
-          use-flakehub: disabled
-          use-gha-cache: enabled
       - name: Run Tests
         run: |
           nix develop --command go tool ginkgo run -r \
