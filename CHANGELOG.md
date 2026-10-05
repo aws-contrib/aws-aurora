@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/aws-contrib/aws-aurora/compare/v0.3.0...v0.3.1) (2026-10-05)
+
+
+### Bug Fixes
+
+* **test:** implement pgx.Rows.TypeMap in the database fakes ([aef25b6](https://github.com/aws-contrib/aws-aurora/commit/aef25b6290ed352fc074adc32a989a1ad9f12d05))
+
 ## [0.3.0](https://github.com/aws-contrib/aws-aurora/compare/v0.2.2...v0.3.0) (2026-05-05)
 
 
