@@ -26,7 +26,7 @@
           inherit version;
           src = pkgs.lib.cleanSource ./.;
           subPackages = [ "cmd/aurora" ];
-          vendorHash = "sha256-KSRUtOiOjF2UY3DcnFyepTREKEyar00Jdl56oVNx0wM=";
+          vendorHash = "sha256-I1tK952Ys3+j0NsLw4DZMmWJiaaTI9M9Jzf7eibNF0c=";
           doInstallCheck = true;
           installCheckPhase = ''
             $out/bin/aurora --help
