@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/aws-contrib/aws-aurora/compare/v0.3.1...v0.4.0) (2026-11-07)
+
+
+### Features
+
+* **ci:** push the Nix build to Cachix, and merge with the App token ([#200](https://github.com/aws-contrib/aws-aurora/issues/200)) ([932b0da](https://github.com/aws-contrib/aws-aurora/commit/932b0da36ae8cca905e26277778a21939fc48aac))
+
 ## [0.3.1](https://github.com/aws-contrib/aws-aurora/compare/v0.3.0...v0.3.1) (2026-10-05)
 
 
