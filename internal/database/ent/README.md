@@ -115,13 +115,13 @@ Package ent provides an extension to the ent package for database operations.
 - [type ListMigrationsParams](<#ListMigrationsParams>)
 - [type ListRevisionsParams](<#ListRevisionsParams>)
 - [type Lock](<#Lock>)
-- [type LockRevisionParams](<#LockRevisionParams>)
+- [type LockMigrationParams](<#LockMigrationParams>)
 - [type Migration](<#Migration>)
 - [type MigrationRepository](<#MigrationRepository>)
   - [func \(x \*MigrationRepository\) ApplyMigration\(ctx context.Context, params \*ApplyMigrationParams\) error](<#MigrationRepository.ApplyMigration>)
   - [func \(x \*MigrationRepository\) ListMigrations\(ctx context.Context, \_ \*ListMigrationsParams\) \(collection \[\]\*Migration, \_ error\)](<#MigrationRepository.ListMigrations>)
-  - [func \(x \*MigrationRepository\) LockRevision\(ctx context.Context, params \*LockRevisionParams\) error](<#MigrationRepository.LockRevision>)
-  - [func \(x \*MigrationRepository\) UnlockRevision\(ctx context.Context, params \*UnlockRevisionParams\) error](<#MigrationRepository.UnlockRevision>)
+  - [func \(x \*MigrationRepository\) LockMigration\(ctx context.Context, params \*LockMigrationParams\) error](<#MigrationRepository.LockMigration>)
+  - [func \(x \*MigrationRepository\) UnlockMigration\(ctx context.Context\) error](<#MigrationRepository.UnlockMigration>)
 - [type MigrationState](<#MigrationState>)
 - [type Querier](<#Querier>)
 - [type QuerierAction](<#QuerierAction>)
@@ -162,7 +162,6 @@ Package ent provides an extension to the ent package for database operations.
 - [type Revision](<#Revision>)
   - [func \(x \*Revision\) GetName\(\) string](<#Revision.GetName>)
   - [func \(x \*Revision\) SetName\(name string\)](<#Revision.SetName>)
-- [type UnlockRevisionParams](<#UnlockRevisionParams>)
 - [type UpdateRevisionParams](<#UpdateRevisionParams>)
   - [func \(x \*UpdateRevisionParams\) SetRevision\(entity \*Revision\)](<#UpdateRevisionParams.SetRevision>)
 - [type UpdateRevisionParamsConverter](<#UpdateRevisionParamsConverter>)
@@ -195,13 +194,10 @@ var (
 var ErrCodeUniqueViolation = pgerrcode.UniqueViolation
 ```
 
-<a name="Mutex"></a>Mutex is a special revision that represents a lock on the database.
+<a name="MigrationLock"></a>MigrationLock is a UUID used to identify the migration lock in the database.
 
 ```go
-var Mutex = &Revision{
-    ID:          "20060102150405",
-    Description: "lock",
-}
+var MigrationLock = uuid.NewMD5(uuid.NameSpaceOID, []byte("aurora_schema_migrations"))
 ```
 
 <a name="IsErrorCode"></a>
@@ -232,7 +228,7 @@ func WithURL() string
 WithURL returns the database URL.
 
 <a name="ApplyMigrationParams"></a>
-## type [ApplyMigrationParams](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/migration.sql_ext.go#L94-L97>)
+## type [ApplyMigrationParams](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/migration.sql_ext.go#L83-L86>)
 
 ApplyMigrationParams represents the parameters for executing a revision.
 
@@ -291,7 +287,7 @@ SetJob sets the params from the entity.
 <a name="DeleteJobParamsConverter"></a>
 ## type [DeleteJobParamsConverter](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/job_conv.go#L34-L37>)
 
-goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws-aurora/internal/database/ent
+goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws\-aurora/internal/database/ent
 
 ```go
 type DeleteJobParamsConverter interface {
@@ -341,7 +337,7 @@ SetLock sets the params from the entity.
 <a name="DeleteLockParamsConverter"></a>
 ## type [DeleteLockParamsConverter](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/lock_conv.go#L34-L37>)
 
-goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws-aurora/internal/database/ent
+goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws\-aurora/internal/database/ent
 
 ```go
 type DeleteLockParamsConverter interface {
@@ -391,7 +387,7 @@ SetRevision sets the params from the entity.
 <a name="DeleteRevisionParamsConverter"></a>
 ## type [DeleteRevisionParamsConverter](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/revision_conv.go#L72-L75>)
 
-goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws-aurora/internal/database/ent
+goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws\-aurora/internal/database/ent
 
 ```go
 type DeleteRevisionParamsConverter interface {
@@ -450,7 +446,7 @@ SetJob sets the params from the entity.
 <a name="ExecDeleteJobParamsConverter"></a>
 ## type [ExecDeleteJobParamsConverter](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/job_conv.go#L43-L46>)
 
-goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws-aurora/internal/database/ent
+goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws\-aurora/internal/database/ent
 
 ```go
 type ExecDeleteJobParamsConverter interface {
@@ -500,7 +496,7 @@ SetLock sets the params from the entity.
 <a name="ExecDeleteLockParamsConverter"></a>
 ## type [ExecDeleteLockParamsConverter](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/lock_conv.go#L43-L46>)
 
-goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws-aurora/internal/database/ent
+goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws\-aurora/internal/database/ent
 
 ```go
 type ExecDeleteLockParamsConverter interface {
@@ -550,7 +546,7 @@ SetRevision sets the params from the entity.
 <a name="ExecDeleteRevisionParamsConverter"></a>
 ## type [ExecDeleteRevisionParamsConverter](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/revision_conv.go#L81-L84>)
 
-goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws-aurora/internal/database/ent
+goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws\-aurora/internal/database/ent
 
 ```go
 type ExecDeleteRevisionParamsConverter interface {
@@ -602,7 +598,7 @@ SetJob sets the params from the entity.
 <a name="ExecInsertJobParamsConverter"></a>
 ## type [ExecInsertJobParamsConverter](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/job_conv.go#L25-L28>)
 
-goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws-aurora/internal/database/ent
+goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws\-aurora/internal/database/ent
 
 ```go
 type ExecInsertJobParamsConverter interface {
@@ -653,7 +649,7 @@ SetLock sets the params from the entity.
 <a name="ExecInsertLockParamsConverter"></a>
 ## type [ExecInsertLockParamsConverter](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/lock_conv.go#L25-L28>)
 
-goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws-aurora/internal/database/ent
+goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws\-aurora/internal/database/ent
 
 ```go
 type ExecInsertLockParamsConverter interface {
@@ -710,7 +706,7 @@ SetRevision sets the params from the entity.
 <a name="ExecInsertRevisionParamsConverter"></a>
 ## type [ExecInsertRevisionParamsConverter](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/revision_conv.go#L25-L28>)
 
-goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws-aurora/internal/database/ent
+goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws\-aurora/internal/database/ent
 
 ```go
 type ExecInsertRevisionParamsConverter interface {
@@ -768,7 +764,7 @@ SetRevision sets the params from the entity.
 <a name="ExecUpdateRevisionParamsConverter"></a>
 ## type [ExecUpdateRevisionParamsConverter](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/revision_conv.go#L62-L66>)
 
-goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws-aurora/internal/database/ent
+goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws\-aurora/internal/database/ent
 
 ```go
 type ExecUpdateRevisionParamsConverter interface {
@@ -826,7 +822,7 @@ SetRevision sets the params from the entity.
 <a name="ExecUpsertRevisionParamsConverter"></a>
 ## type [ExecUpsertRevisionParamsConverter](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/revision_conv.go#L43-L46>)
 
-goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws-aurora/internal/database/ent
+goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws\-aurora/internal/database/ent
 
 ```go
 type ExecUpsertRevisionParamsConverter interface {
@@ -854,7 +850,7 @@ func (c *ExecUpsertRevisionParamsConverterImpl) SetFromRevision(target *ExecUpse
 
 
 <a name="FileSystem"></a>
-## type [FileSystem](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/migration.sql_ext.go#L31-L35>)
+## type [FileSystem](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/migration.sql_ext.go#L26-L30>)
 
 FileSystem represents a filesystem that supports globbing and reading files.
 
@@ -948,7 +944,7 @@ SetJob sets the params from the entity.
 <a name="GetJobParamsConverter"></a>
 ## type [GetJobParamsConverter](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/job_conv.go#L7-L10>)
 
-goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws-aurora/internal/database/ent
+goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws\-aurora/internal/database/ent
 
 ```go
 type GetJobParamsConverter interface {
@@ -998,7 +994,7 @@ SetLock sets the params from the entity.
 <a name="GetLockParamsConverter"></a>
 ## type [GetLockParamsConverter](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/lock_conv.go#L7-L10>)
 
-goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws-aurora/internal/database/ent
+goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws\-aurora/internal/database/ent
 
 ```go
 type GetLockParamsConverter interface {
@@ -1048,7 +1044,7 @@ SetRevision sets the params from the entity.
 <a name="GetRevisionParamsConverter"></a>
 ## type [GetRevisionParamsConverter](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/revision_conv.go#L7-L10>)
 
-goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws-aurora/internal/database/ent
+goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws\-aurora/internal/database/ent
 
 ```go
 type GetRevisionParamsConverter interface {
@@ -1100,7 +1096,7 @@ SetJob sets the params from the entity.
 <a name="InsertJobParamsConverter"></a>
 ## type [InsertJobParamsConverter](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/job_conv.go#L16-L19>)
 
-goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws-aurora/internal/database/ent
+goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws\-aurora/internal/database/ent
 
 ```go
 type InsertJobParamsConverter interface {
@@ -1151,7 +1147,7 @@ SetLock sets the params from the entity.
 <a name="InsertLockParamsConverter"></a>
 ## type [InsertLockParamsConverter](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/lock_conv.go#L16-L19>)
 
-goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws-aurora/internal/database/ent
+goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws\-aurora/internal/database/ent
 
 ```go
 type InsertLockParamsConverter interface {
@@ -1208,7 +1204,7 @@ SetRevision sets the params from the entity.
 <a name="InsertRevisionParamsConverter"></a>
 ## type [InsertRevisionParamsConverter](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/revision_conv.go#L16-L19>)
 
-goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws-aurora/internal/database/ent
+goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws\-aurora/internal/database/ent
 
 ```go
 type InsertRevisionParamsConverter interface {
@@ -1269,7 +1265,7 @@ func (x *JobRepository) WaitJob(ctx context.Context, params *WaitJobParams) (*Jo
 WaitJob waits for a job to complete and returns the job details.
 
 <a name="ListMigrationsParams"></a>
-## type [ListMigrationsParams](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/migration.sql_ext.go#L196>)
+## type [ListMigrationsParams](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/migration.sql_ext.go#L185>)
 
 ListMigrationsParams represents the parameters for listing migrations.
 
@@ -1301,15 +1297,13 @@ type Lock struct {
 }
 ```
 
-<a name="LockRevisionParams"></a>
-## type [LockRevisionParams](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/migration.sql_ext.go#L46-L51>)
+<a name="LockMigrationParams"></a>
+## type [LockMigrationParams](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/migration.sql_ext.go#L44-L47>)
 
-LockRevisionParams represents the parameters for locking a revision.
+LockMigrationParams represents the parameters for locking a revision.
 
 ```go
-type LockRevisionParams struct {
-    // Revision contains the parameters for locking a revision.
-    Revision *Revision
+type LockMigrationParams struct {
     // Timeout is the maximum time to wait for the lock.
     Timeout time.Duration
 }
@@ -1328,7 +1322,7 @@ type Migration struct {
 ```
 
 <a name="MigrationRepository"></a>
-## type [MigrationRepository](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/migration.sql_ext.go#L38-L43>)
+## type [MigrationRepository](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/migration.sql_ext.go#L36-L41>)
 
 MigrationRepository represents a repository for managing revisions.
 
@@ -1342,7 +1336,7 @@ type MigrationRepository struct {
 ```
 
 <a name="MigrationRepository.ApplyMigration"></a>
-### func \(\*MigrationRepository\) [ApplyMigration](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/migration.sql_ext.go#L100>)
+### func \(\*MigrationRepository\) [ApplyMigration](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/migration.sql_ext.go#L89>)
 
 ```go
 func (x *MigrationRepository) ApplyMigration(ctx context.Context, params *ApplyMigrationParams) error
@@ -1351,7 +1345,7 @@ func (x *MigrationRepository) ApplyMigration(ctx context.Context, params *ApplyM
 ApplyMigration executes a revision.
 
 <a name="MigrationRepository.ListMigrations"></a>
-### func \(\*MigrationRepository\) [ListMigrations](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/migration.sql_ext.go#L199>)
+### func \(\*MigrationRepository\) [ListMigrations](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/migration.sql_ext.go#L188>)
 
 ```go
 func (x *MigrationRepository) ListMigrations(ctx context.Context, _ *ListMigrationsParams) (collection []*Migration, _ error)
@@ -1359,23 +1353,23 @@ func (x *MigrationRepository) ListMigrations(ctx context.Context, _ *ListMigrati
 
 ListMigrations lists all revisions in the repository.
 
-<a name="MigrationRepository.LockRevision"></a>
-### func \(\*MigrationRepository\) [LockRevision](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/migration.sql_ext.go#L54>)
+<a name="MigrationRepository.LockMigration"></a>
+### func \(\*MigrationRepository\) [LockMigration](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/migration.sql_ext.go#L50>)
 
 ```go
-func (x *MigrationRepository) LockRevision(ctx context.Context, params *LockRevisionParams) error
+func (x *MigrationRepository) LockMigration(ctx context.Context, params *LockMigrationParams) error
 ```
 
-LockRevision locks the revision for exclusive access.
+LockMigration locks a revision for exclusive access.
 
-<a name="MigrationRepository.UnlockRevision"></a>
-### func \(\*MigrationRepository\) [UnlockRevision](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/migration.sql_ext.go#L87>)
+<a name="MigrationRepository.UnlockMigration"></a>
+### func \(\*MigrationRepository\) [UnlockMigration](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/migration.sql_ext.go#L75>)
 
 ```go
-func (x *MigrationRepository) UnlockRevision(ctx context.Context, params *UnlockRevisionParams) error
+func (x *MigrationRepository) UnlockMigration(ctx context.Context) error
 ```
 
-UnlockRevision unlocks the revision after exclusive access.
+UnlockMigration unlocks the revision after exclusive access.
 
 <a name="MigrationState"></a>
 ## type [MigrationState](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/models_ext.go#L14-L19>)
@@ -1806,18 +1800,6 @@ func (x *Revision) SetName(name string)
 
 SetName sets the name of the revision file.
 
-<a name="UnlockRevisionParams"></a>
-## type [UnlockRevisionParams](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/migration.sql_ext.go#L81-L84>)
-
-UnlockRevisionParams represents the parameters for unlocking a revision.
-
-```go
-type UnlockRevisionParams struct {
-    // Revision contains the parameters for unlocking a revision.
-    Revision *Revision
-}
-```
-
 <a name="UpdateRevisionParams"></a>
 ## type [UpdateRevisionParams](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/revision.sql_gen.go#L444-L454>)
 
@@ -1849,7 +1831,7 @@ SetRevision sets the params from the entity.
 <a name="UpdateRevisionParamsConverter"></a>
 ## type [UpdateRevisionParamsConverter](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/revision_conv.go#L52-L56>)
 
-goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws-aurora/internal/database/ent
+goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws\-aurora/internal/database/ent
 
 ```go
 type UpdateRevisionParamsConverter interface {
@@ -1907,7 +1889,7 @@ SetRevision sets the params from the entity.
 <a name="UpsertRevisionParamsConverter"></a>
 ## type [UpsertRevisionParamsConverter](<https://github.com/aws-contrib/aws-aurora/blob/main/internal/database/ent/revision_conv.go#L34-L37>)
 
-goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws-aurora/internal/database/ent
+goverter:converter goverter:skipCopySameType yes goverter:output:file models\_conv\_gen.go goverter:output:package github.com/aws\-contrib/aws\-aurora/internal/database/ent
 
 ```go
 type UpsertRevisionParamsConverter interface {
