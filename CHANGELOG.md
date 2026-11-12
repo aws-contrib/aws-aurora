@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/aws-contrib/aws-aurora/compare/v0.4.0...v0.4.1) (2026-11-12)
+
+
+### Bug Fixes
+
+* **ci:** read APP_CLIENT_ID from vars ([94592cb](https://github.com/aws-contrib/aws-aurora/commit/94592cb87cd31ef5d96dd2fe6fece78a2df38873))
+
 ## [0.4.0](https://github.com/aws-contrib/aws-aurora/compare/v0.3.1...v0.4.0) (2026-11-07)
 
 
