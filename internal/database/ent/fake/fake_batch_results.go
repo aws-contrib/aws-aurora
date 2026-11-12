@@ -53,6 +53,16 @@ type FakeBatchResults struct {
 	queryRowReturnsOnCall map[int]struct {
 		result1 pgx.Row
 	}
+	TxStub        func() pgx.Tx
+	txMutex       sync.RWMutex
+	txArgsForCall []struct {
+	}
+	txReturns struct {
+		result1 pgx.Tx
+	}
+	txReturnsOnCall map[int]struct {
+		result1 pgx.Tx
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -272,6 +282,59 @@ func (fake *FakeBatchResults) QueryRowReturnsOnCall(i int, result1 pgx.Row) {
 	}
 	fake.queryRowReturnsOnCall[i] = struct {
 		result1 pgx.Row
+	}{result1}
+}
+
+func (fake *FakeBatchResults) Tx() pgx.Tx {
+	fake.txMutex.Lock()
+	ret, specificReturn := fake.txReturnsOnCall[len(fake.txArgsForCall)]
+	fake.txArgsForCall = append(fake.txArgsForCall, struct {
+	}{})
+	stub := fake.TxStub
+	fakeReturns := fake.txReturns
+	fake.recordInvocation("Tx", []interface{}{})
+	fake.txMutex.Unlock()
+	if stub != nil {
+		return stub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *FakeBatchResults) TxCallCount() int {
+	fake.txMutex.RLock()
+	defer fake.txMutex.RUnlock()
+	return len(fake.txArgsForCall)
+}
+
+func (fake *FakeBatchResults) TxCalls(stub func() pgx.Tx) {
+	fake.txMutex.Lock()
+	defer fake.txMutex.Unlock()
+	fake.TxStub = stub
+}
+
+func (fake *FakeBatchResults) TxReturns(result1 pgx.Tx) {
+	fake.txMutex.Lock()
+	defer fake.txMutex.Unlock()
+	fake.TxStub = nil
+	fake.txReturns = struct {
+		result1 pgx.Tx
+	}{result1}
+}
+
+func (fake *FakeBatchResults) TxReturnsOnCall(i int, result1 pgx.Tx) {
+	fake.txMutex.Lock()
+	defer fake.txMutex.Unlock()
+	fake.TxStub = nil
+	if fake.txReturnsOnCall == nil {
+		fake.txReturnsOnCall = make(map[int]struct {
+			result1 pgx.Tx
+		})
+	}
+	fake.txReturnsOnCall[i] = struct {
+		result1 pgx.Tx
 	}{result1}
 }
 
