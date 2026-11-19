@@ -4,11 +4,6 @@
   "service": "workspace",
   "dockerComposeFile": "docker-compose.yml",
   "workspaceFolder": "/home/vscode/workspace",
-  "features": {
-    "ghcr.io/devcontainers/features/nix:1": {
-      "extraNixConfig": "experimental-features = nix-command flakes"
-    }
-  },
   "containerEnv": {
     "DATABASE_URL": "postgres://vscode@postgres:5432/aws-aurora?sslmode=disable"
   },
